@@ -14,7 +14,8 @@ export const register = async (req, res) => {
         success: false,
       });
     }
-    // const file = req.file;
+    const file = req.file;
+
     // const fileUri = getDataUri(file);
     // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
@@ -33,9 +34,10 @@ export const register = async (req, res) => {
       phoneNumber,
       password: hashedPassword,
       role,
-      // profile:{
-      //     profilePhoto:cloudResponse.secure_url,
-      // }
+      profile: {
+        // profilePhoto:cloudResponse.secure_url,
+        profilePhoto: file.originalname,
+      },
     });
 
     return res.status(201).json({
