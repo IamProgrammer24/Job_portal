@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const Job = ({ job }) => {
   const navigate = useNavigate();
-  // const jobId = "lsekdhjgdsnfvsdkjf";
+  const jobId = "lsekdhjgdsnfvsdkjf";
 
   return (
     <div className="p-5 rounded-md shadow-xl bg-white border border-gray-100">
@@ -48,7 +48,7 @@ const Job = ({ job }) => {
       </div>
       <div className="flex items-center gap-4 mt-4">
         <Button
-          onClick={() => navigate(`/description/${job?._id}`)}
+          onClick={() => navigate(`/description/${jobId}`)}
           variant="outline"
         >
           Details

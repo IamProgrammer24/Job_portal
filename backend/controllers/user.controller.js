@@ -129,7 +129,7 @@ export const updateProfile = async (req, res) => {
     const file = req.file;
     // cloudinary ayega idhar
     const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    // const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
 
     let skillsArray;
     if (skills) {
@@ -150,12 +150,13 @@ export const updateProfile = async (req, res) => {
     if (phoneNumber) user.phoneNumber = phoneNumber;
     if (bio) user.profile.bio = bio;
     if (skills) user.profile.skills = skillsArray;
+    if (file) user.profile.resumeOriginalName = file.originalname;
 
     // resume comes later here...
-    if (cloudResponse) {
-      user.profile.resume = cloudResponse.secure_url; // save the cloudinary url
-      user.profile.resumeOriginalName = file.originalname; // Save the original file name
-    }
+    // if (cloudResponse) {
+    //   user.profile.resume = cloudResponse.secure_url; // save the cloudinary url
+    //   user.profile.resumeOriginalName = file.originalname; // Save the original file name
+    // }
 
     await user.save();
 
