@@ -3,13 +3,16 @@ import { Button } from "./ui/button";
 import { Search } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSearchedQuery } from "../redux/jobSlice";
 
 const HeroSection = () => {
   const [query, setQuery] = useState("");
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const searchJobHandler = () => {
+    dispatch(setSearchedQuery(query));
     navigate("/browse");
   };
 
@@ -31,6 +34,7 @@ const HeroSection = () => {
           <input
             type="text"
             placeholder="Find your dream jobs"
+            onChange={(e) => setQuery(e.target.value)}
             className="outline-none border-none w-full"
           />
           <Button
