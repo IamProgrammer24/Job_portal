@@ -57,13 +57,13 @@ const AdminJobsTable = () => {
                     <MoreHorizontal />
                   </PopoverTrigger>
                   <PopoverContent className="w-32">
-                    <div
+                    {/* <div
                       onClick={() => navigate(`/admin/companies/${job._id}`)}
                       className="flex items-center gap-2 w-fit cursor-pointer"
                     >
                       <Edit2 className="w-4" />
                       <span>Edit</span>
-                    </div>
+                    </div> */}
                     <div
                       onClick={() =>
                         navigate(`/admin/jobs/${job._id}/applicants`)
