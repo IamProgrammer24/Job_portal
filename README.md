@@ -1,12 +1,21 @@
 # Job Portal Application
 
-![Cover](src/assets/dice_Game.png)
+![Cover](frontend/assets/cover_page.png)
+
 
 ## 📝 Project Description
 
 The **Job Portal Application** is a web-based platform designed to streamline the recruitment process by connecting job seekers with employers in an efficient, user-friendly, and organized manner. The platform facilitates job postings, applications, resume submissions, and employer-candidate interactions.
 
 ---
+
+## 🚀 Live Demo
+
+Check out the live version of this project here:
+
+🔗 [View Live Site](https://job-portal-1-ssaf.onrender.com/)
+---
+
 ## 🚀 Features
 
 ### 👤 User Module (Job Seekers)
@@ -33,14 +42,6 @@ The **Job Portal Application** is a web-based platform designed to streamline th
 | Database    | MySQL MongoDB   |
 | Auth        | JWT              |
 | Deployment  | Render |
-
----
-
-## 🚀 Live Demo
-
-Check out the live version of this project here:
-
-🔗 [View Live Site](https://job-portal-1-ssaf.onrender.com/)
 
 ---
 
