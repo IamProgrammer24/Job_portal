@@ -1,6 +1,6 @@
 # Job Portal Application
 
-![Cover](frontend/assets/cover_page.png)
+![Cover](frontend/src/assets/cover_page.png)
 
 
 ## 📝 Project Description
