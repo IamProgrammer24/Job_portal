@@ -36,7 +36,7 @@ export const register = async (req, res) => {
       role,
       profile: {
         // profilePhoto:cloudResponse.secure_url,
-        profilePhoto: file.originalname,
+        profilePhoto: file ? file.originalname : null
       },
     });
 
@@ -51,6 +51,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body;
+    console.log(email)
 
     if (!email || !password || !role) {
       return res.status(400).json({
@@ -61,14 +62,14 @@ export const login = async (req, res) => {
     let user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
-        message: "Incorrect email or password.",
+        message: "Incorrect email",
         success: false,
       });
     }
     const isPasswordMatch = await bcrypt.compare(password, user.password);
     if (!isPasswordMatch) {
       return res.status(400).json({
-        message: "Incorrect email or password.",
+        message: "Incorrect password.",
         success: false,
       });
     }
