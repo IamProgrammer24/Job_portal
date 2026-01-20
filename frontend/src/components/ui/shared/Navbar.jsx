@@ -85,7 +85,7 @@ const Navbar = () => {
                 <Avatar className="cursor-pointer">
                   <AvatarImage
                     // src={user?.profile?.profilePhoto}
-                    src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"
+                    src={user?.profile?.profilePhoto}
                     alt="@shadcn"
                   />
                 </Avatar>
@@ -96,7 +96,7 @@ const Navbar = () => {
                     <Avatar className="cursor-pointer">
                       <AvatarImage
                         // src={user?.profile?.profilePhoto}
-                        src="https://www.shutterstock.com/image-vector/circle-line-simple-design-logo-600nw-2174926871.jpg"
+                        src={user?.profile?.profilePhoto}
                         alt="@shadcn"
                       />
                     </Avatar>

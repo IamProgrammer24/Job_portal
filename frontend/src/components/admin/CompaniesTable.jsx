@@ -63,7 +63,7 @@ const CompaniesTable = () => {
               <TableCell>
                 <Avatar>
                   {/* <AvatarImage src={company.logo} /> */}
-                  <AvatarImage src="https://www.logologo.com/logo.php?id=206" />
+                  <AvatarImage src={company?.logo} />
                 </Avatar>
               </TableCell>
               <TableCell>{company.name}</TableCell>
