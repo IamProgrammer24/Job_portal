@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const useGetAllJobs = () => {
+  console.log("calling function")
   const dispatch = useDispatch();
   const { searchedQuery } = useSelector((store) => store.job);
   useEffect(() => {
@@ -24,7 +25,7 @@ const useGetAllJobs = () => {
       }
     };
     fetchAllJobs();
-  }, []);
+  }, [searchedQuery]);
 };
 
 export default useGetAllJobs;

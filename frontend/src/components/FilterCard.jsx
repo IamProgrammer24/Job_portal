@@ -91,17 +91,22 @@ const FilterCard = ({ filters, setFilters }) => {
       </div>
 
       {/* Salary Filter */}
-      <div className="mt-3">
-        <h1 className="font-bold text-lg">Salary</h1>
-        <input
-          className="w-full border p-2 rounded mt-2"
-          placeholder="Minimum Salary"
-          value={filters.salary}
-          onChange={(e) =>
-            setFilters({ ...filters, salary: e.target.value })
-          }
-        />
-      </div>
+     <div className="mt-3">
+  <h1 className="font-bold text-lg">Salary</h1>
+  <select
+    className="w-full border p-2 rounded mt-2"
+    value={filters.salary}
+    onChange={(e) =>
+      setFilters({ ...filters, salary: e.target.value })
+    }
+  >
+    <option value="">Select Salary (LPA)</option>
+    <option value="3">3 LPA</option>
+    <option value="5">5 LPA</option>
+    <option value="7">7 LPA</option>
+    <option value="10">10 LPA</option>
+  </select>
+</div>
     </div>
   );
 };

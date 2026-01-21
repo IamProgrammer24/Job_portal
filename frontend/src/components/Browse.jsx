@@ -9,7 +9,7 @@ import { setSearchedQuery } from "../redux/jobSlice";
 const randomJobs = [1, 2, 45];
 
 const Browse = () => {
-  useGetAllJobs();
+  // useGetAllJobs();
   const { allJobs } = useSelector((store) => store.job);
   console.log(allJobs);
   const dispatch = useDispatch();
@@ -17,7 +17,7 @@ const Browse = () => {
     return () => {
       dispatch(setSearchedQuery(""));
     };
-  }, []);
+  }, [dispatch]);
   return (
     <div>
       <Navbar />
