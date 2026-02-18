@@ -5,16 +5,18 @@ export const postJob = async (req, res) => {
   try {
     const {
       title,
+      department,
       description,
       requirements,
       salary,
       location,
       jobType,
-      experience,
+      experienceLevel,
       position,
       companyId,
     } = req.body;
     const userId = req.id;
+    console.log(experienceLevel);
 
     if (
       !title ||
@@ -22,9 +24,9 @@ export const postJob = async (req, res) => {
       !requirements ||
       !salary ||
       !location ||
-      !jobType ||
-      !experience ||
       !position ||
+      !jobType ||
+      !department ||
       !companyId
     ) {
       return res.status(400).json({
@@ -39,8 +41,9 @@ export const postJob = async (req, res) => {
       salary: Number(salary),
       location,
       jobType,
-      experienceLevel: experience,
+      experienceLevel,
       position,
+      department,
       company: companyId,
       created_by: userId,
     });
