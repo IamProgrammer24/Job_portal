@@ -104,21 +104,53 @@ export const getJobById = async (req, res) => {
 export const getAdminJobs = async (req, res) => {
   try {
     const adminId = req.id;
-    const jobs = await Job.find({ created_by: adminId }).populate({
-      path: "company",
-      createdAt: -1,
-    });
-    if (!jobs) {
-      return res.status(404).json({
-        message: "Jobs not found.",
-        success: false,
-      });
+
+    // ✅ get filters from query
+    const { department, role, date } = req.query;
+
+    // ✅ base filter (VERY IMPORTANT)
+    let filter = {
+      created_by: adminId,
+    };
+
+    // ✅ department filtering
+    if (department) {
+      filter.department = department;
     }
+
+    // ✅ role/title filtering (case insensitive search)
+    if (role) {
+      filter.title = {
+        $regex: role,
+        $options: "i",
+      };
+    }
+
+    // ✅ date filtering (last N days)
+    if (date) {
+      const daysAgo = new Date();
+      daysAgo.setDate(daysAgo.getDate() - Number(date));
+
+      filter.createdAt = {
+        $gte: daysAgo,
+      };
+    }
+
+    // ✅ fetch jobs
+    const jobs = await Job.find(filter)
+      .populate("company")
+      .sort({ createdAt: -1 });
+
     return res.status(200).json({
-      jobs,
       success: true,
+      jobs,
     });
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
   }
 };
+
