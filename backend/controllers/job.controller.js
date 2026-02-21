@@ -14,9 +14,9 @@ export const postJob = async (req, res) => {
       experienceLevel,
       position,
       companyId,
+      screeningQuestions,
     } = req.body;
     const userId = req.id;
-    console.log(experienceLevel);
 
     if (
       !title ||
@@ -44,6 +44,7 @@ export const postJob = async (req, res) => {
       experienceLevel,
       position,
       department,
+      screeningQuestions,
       company: companyId,
       created_by: userId,
     });

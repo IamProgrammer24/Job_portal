@@ -57,6 +57,24 @@ const jobSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    screeningQuestions: [
+  {
+    question: {
+      type: String,
+      required: true,
+    },
+    type: {
+      type: String,
+      enum: ["text", "yesno", "number"],
+      default: "text",
+    },
+    required: {
+      type: Boolean,
+      default: true,
+    },
+  },
+],
+
   },
   { timestamps: true },
 );
