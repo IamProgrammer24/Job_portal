@@ -5,6 +5,8 @@ export const applyJob = async (req, res) => {
   try {
     const userId = req.id;
     const jobId = req.params.id;
+    const {answers} = req.body;
+
     if (!jobId) {
       return res.status(400).json({
         message: "Job id is required.",
@@ -36,6 +38,7 @@ export const applyJob = async (req, res) => {
     const newApplication = await Application.create({
       job: jobId,
       applicant: userId,
+      answers,
     });
 
     job.applications.push(newApplication._id);

@@ -39,16 +39,20 @@ const PostJob = () => {
     requirements: "",
     salary: "",
     location: "",
-   experienceLevel: 0,
+    experienceLevel: 0,
     jobType: "",
     position: 0,
     companyId: "",
     department: "",
   });
   const [loading, setLoading] = useState(false);
+  const [questions, setQuestions] = useState([
+    { question: "", type: "text", required: true },
+  ]);
   const navigate = useNavigate();
 
   const { companies } = useSelector((store) => store.company);
+
   const changeEventHandler = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
@@ -59,12 +63,34 @@ const PostJob = () => {
     );
     setInput({ ...input, companyId: selectedCompany._id });
   };
+  const addQuestion = () => {
+    setQuestions([
+      ...questions,
+      { question: "", type: "text", required: true },
+    ]);
+  };
+  const handleQuestionChange = (index, field, value) => {
+    const updated = [...questions];
+    updated[index][field] = value;
+    setQuestions(updated);
+  };
 
   const submitHandler = async (e) => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post(`${JOB_API_END_POINT}/post`, input, {
+
+      // remove empty screening questions
+      const filteredQuestions = questions.filter(
+        (q) => q.question.trim() !== "",
+      );
+
+      // keep input unchanged
+      const jobData = {
+        ...input,
+        screeningQuestions: filteredQuestions,
+      };
+      const res = await axios.post(`${JOB_API_END_POINT}/post`, jobData, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -275,6 +301,105 @@ const PostJob = () => {
                 className="w-full pl-10 pr-4 py-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
+          </div>
+          {/* Custom Questions */}
+          <div className="mt-10">
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6">
+              Screening Questions
+            </h3>
+
+            {questions.map((q, index) => (
+              <div
+                key={index}
+                className="bg-white border border-gray-200 rounded-xl p-5 shadow-sm mb-4 space-y-4"
+              >
+                {/* HEADER */}
+                <div className="flex justify-between items-center">
+                  <p className="font-medium text-gray-700">
+                    Question #{index + 1}
+                  </p>
+
+                  {questions.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setQuestions(questions.filter((_, i) => i !== index))
+                      }
+                      className="text-red-500 text-sm hover:text-red-600 cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+
+                {/* QUESTION INPUT */}
+                <div>
+                  <Label>Question</Label>
+                  <Input
+                    placeholder="e.g. Do you have experience with React?"
+                    value={q.question}
+                    onChange={(e) =>
+                      handleQuestionChange(index, "question", e.target.value)
+                    }
+                    className="mt-2"
+                  />
+                </div>
+
+                {/* TYPE + REQUIRED */}
+                <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
+                  {/* TYPE */}
+                  <div className="w-full md:w-1/2">
+                    <Label>Answer Type</Label>
+                    <Select
+                      value={q.type}
+                      onValueChange={(value) =>
+                        handleQuestionChange(index, "type", value)
+                      }
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue />
+                      </SelectTrigger>
+
+                      <SelectContent>
+                        <SelectItem value="text">Text Answer</SelectItem>
+                        <SelectItem value="yesno">Yes / No</SelectItem>
+                        <SelectItem value="number">Number</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* REQUIRED TOGGLE */}
+                  <div className="flex items-center gap-3 mt-6">
+                    <span className="text-sm text-gray-600">Required</span>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleQuestionChange(index, "required", !q.required)
+                      }
+                      className={`w-12 h-6 flex items-center rounded-full p-1 transition ${
+                        q.required ? "bg-gray-600" : "bg-gray-300"
+                      }`}
+                    >
+                      <div
+                        className={`bg-white w-4 h-4 rounded-full shadow-md transform transition ${
+                          q.required ? "translate-x-6" : ""
+                        }`}
+                      />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            {/* ADD BUTTON */}
+            <Button
+              type="button"
+              onClick={addQuestion}
+              className="mt-4 bg-gray-700 hover:bg-gray-800"
+            >
+              + Add Screening Question
+            </Button>
           </div>
 
           {/* Button */}
