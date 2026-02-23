@@ -173,9 +173,13 @@ import { toast } from "sonner";
 import { useSelector } from "react-redux";
 import useGetCompanyById from "../hooks/useGetCompanyById";
 
+import { useDispatch } from "react-redux";
+import { setSingleCompany } from "@/redux/companySlice";
+
 const CompanyDetails = () => {
   const { id } = useParams();
   useGetCompanyById(id);
+  const dispatch = useDispatch();
 
   const { singleCompany } = useSelector((store) => store.company);
 
@@ -255,9 +259,13 @@ const CompanyDetails = () => {
           withCredentials: true,
         },
       );
+   if (res.data.success) {
+  toast.success(res.data.message);
 
-      toast.success(res.data.message);
-      setEditMode(false);
+  dispatch(setSingleCompany(res.data.company)); // ⭐ IMPORTANT
+
+  setEditMode(false);
+}
     } catch (err) {
       toast.error("Update failed");
     } finally {
