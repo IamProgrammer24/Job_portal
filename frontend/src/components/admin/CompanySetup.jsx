@@ -167,6 +167,7 @@ import { Pencil, Loader2, Globe, MapPin } from "lucide-react";
 
 import axios from "axios";
 import { COMPANY_API_END_POINT, JOB_API_END_POINT } from "../utils/constant";
+import { useNavigate } from "react-router-dom";
 
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
@@ -180,6 +181,7 @@ const CompanyDetails = () => {
   const { id } = useParams();
   useGetCompanyById(id);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { singleCompany } = useSelector((store) => store.company);
 
@@ -259,13 +261,13 @@ const CompanyDetails = () => {
           withCredentials: true,
         },
       );
-   if (res.data.success) {
-  toast.success(res.data.message);
+      if (res.data.success) {
+        toast.success(res.data.message);
 
-  dispatch(setSingleCompany(res.data.company)); // ⭐ IMPORTANT
+        dispatch(setSingleCompany(res.data.company)); // ⭐ IMPORTANT
 
-  setEditMode(false);
-}
+        setEditMode(false);
+      }
     } catch (err) {
       toast.error("Update failed");
     } finally {
@@ -274,7 +276,7 @@ const CompanyDetails = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <Navbar />
 
       <div className="max-w-6xl mx-auto my-10 space-y-6">
@@ -395,6 +397,8 @@ const CompanyDetails = () => {
             <div
               key={job._id}
               className="border p-4 rounded-lg mb-3 hover:bg-gray-50"
+               onClick={() => navigate(`/admin/jobs/${job._id}`)}
+              
             >
               <h3 className="font-semibold">{job.title}</h3>
               <p className="text-sm text-gray-500">{job.location}</p>
@@ -402,7 +406,7 @@ const CompanyDetails = () => {
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

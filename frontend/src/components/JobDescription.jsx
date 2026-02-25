@@ -11,17 +11,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import ApplyJobModal from "./ApplyJobModal";
+import { useNavigate } from "react-router-dom";
 
 const JobDescription = () => {
   const { singleJob } = useSelector((store) => store.job);
   const { user } = useSelector((store) => store.auth);
+  const navigate = useNavigate();
 
-  const isIntiallyApplied =
-    singleJob?.applications?.some(
-      (application) => application.applicant === user?._id,
-    ) || false;
+  // const isIntiallyApplied =
+  //   singleJob?.applications?.some(
+  //     (application) => application.applicant?._id === user?._id,
+  //   ) || false;
 
-  const [isApplied, setIsApplied] = useState(isIntiallyApplied);
+  const isApplied =
+  singleJob?.applications?.some(
+    (application) =>
+      application.applicant?._id?.toString() ===
+      user?._id?.toString()
+  ) || false;
+
+
+
+
+  // const [isApplied, setIsApplied] = useState(isIntiallyApplied);
   const [openApply, setOpenApply] = useState(false);
 
   const params = useParams();
@@ -29,6 +41,14 @@ const JobDescription = () => {
   const dispatch = useDispatch();
 
   const handleApplyClick = async () => {
+
+    if (!user) {
+  toast.error("Please login to apply for this job");
+
+  navigate("/login");
+
+  return;
+}
   // ✅ If no screening questions → Direct Apply
   if (!singleJob?.screeningQuestions?.length) {
     try {
@@ -39,7 +59,14 @@ const JobDescription = () => {
       );
 
       toast.success(res.data.message);
-      setIsApplied(true);
+       // ✅ REFETCH JOB
+    const updatedJob = await axios.get(
+      `${JOB_API_END_POINt}/get/${jobId}`,
+      { withCredentials: true }
+    );
+
+    dispatch(setSingleJob(updatedJob.data.job));
+      // setIsApplied(true);
 
     } catch (err) {
       toast.error(
@@ -53,6 +80,7 @@ const JobDescription = () => {
   }
 };
 
+
   useEffect(() => {
     const fetchSingleJob = async () => {
       try {
@@ -62,11 +90,6 @@ const JobDescription = () => {
         if (res.data.success) {
           console.log(res.data);
           dispatch(setSingleJob(res.data.job));
-          setIsApplied(
-            res.data.job.applications.some(
-              (application) => application.applicant === user?._id,
-            ),
-          ); // Ensure the state is in sync with fetched data
         }
       } catch (error) {
         console.log(error);
@@ -84,7 +107,7 @@ const JobDescription = () => {
           {/* COMPANY LOGO */}
           <div className="flex-shrink-0">
             <img
-              src={singleJob?.company?.logo || "https://via.placeholder.com/80"}
+              src={singleJob?.company?.logo || "https://www.eventx.om/uploads/default-supplier-profile.jpg"}
               alt="company logo"
               className="w-20 h-20 rounded-xl object-cover border shadow-sm"
             />
@@ -199,7 +222,6 @@ const JobDescription = () => {
   <ApplyJobModal
     job={singleJob}
     close={() => setOpenApply(false)}
-    setIsApplied={setIsApplied}
   />
 )}
     </div>

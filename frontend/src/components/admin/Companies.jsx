@@ -20,12 +20,12 @@ const Companies = () => {
   }, [input]);
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
       <Navbar />
       <div className="max-w-6xl mx-auto my-10">
         <div className="flex items-center justify-between my-5">
           <Input
-            className="w-fit"
+            className="w-fit bg-white"
             placeholder="Filter by name"
             onChange={(e) => setInput(e.target.value)}
           />

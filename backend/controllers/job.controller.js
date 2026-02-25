@@ -1,3 +1,4 @@
+import { Application } from "../models/application.model.js";
 import { Job } from "../models/job.model.js";
 
 // admin post krega job
@@ -90,6 +91,10 @@ export const getJobById = async (req, res) => {
     const job = await Job.findById(jobId)
       .populate({
         path: "applications",
+        populate: {
+          path: "applicant",   // ⭐ populate user inside application
+          select: "fullname email updatedAt profile.profilePhoto", // fields you want
+        },
       })
       .populate({
         path: "company", // ⭐ ADD THIS
@@ -166,3 +171,39 @@ export const getJobsByCompany = async (req,res)=>{
 
   res.json({success:true,jobs});
 }
+
+export const deleteJob = async (req, res) => {
+  try {
+    const jobId = req.params.id;
+    
+    // check company exists
+    const job = await Job.findById(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        success: false,
+        message: "Job not found",
+      });
+    }
+
+    // ✅ find all applications of this job
+    await Application.deleteMany({ job: jobId });
+
+    
+    // ✅ delete applications related to jobs
+    await Job.findByIdAndDelete(jobId);
+
+    return res.status(200).json({
+      success: true,
+      message:
+        "Job and all applications deleted successfully",
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
+  }
+};

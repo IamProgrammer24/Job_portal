@@ -5,7 +5,7 @@ export const applyJob = async (req, res) => {
   try {
     const userId = req.id;
     const jobId = req.params.id;
-    const {answers} = req.body;
+    const { answers } = req.body;
 
     if (!jobId) {
       return res.status(400).json({
@@ -130,6 +130,41 @@ export const updateStatus = async (req, res) => {
     return res.status(200).json({
       message: "Status updated successfully.",
       success: true,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getApplicationById = async (req, res) => {
+  try {
+    const applicationId = req.params.id;
+
+    const application = await Application.findById(applicationId)
+      .populate({
+        path: "applicant",
+        select:
+          "fullname email phoneNumber profile.profilePhoto profile.resume profile.bio profile.skills profile.resumeOriginalName",
+      })
+      .populate({
+        path: "job",
+        select: "title company screeningQuestions",
+        populate: {
+          path: "company",
+          select: "name",
+        },
+      });
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      application,
     });
   } catch (error) {
     console.log(error);

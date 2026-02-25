@@ -6,7 +6,8 @@ import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
   try {
-    const { fullname, email, phoneNumber, password, role } = req.body;
+    const { fullname, email, phoneNumber, password, role } =
+      req.body;
 
     if (!fullname || !email || !phoneNumber || !password || !role) {
       return res.status(400).json({
@@ -14,29 +15,44 @@ export const register = async (req, res) => {
         success: false,
       });
     }
-    const file = req.file;
 
-    const fileUri = getDataUri(file);
-    const cloudResponse = await cloudinary.uploader.upload(fileUri.content);
+    const normalizedEmail = email.toLowerCase();
 
-    const user = await User.findOne({ email });
-    if (user) {
+    // ✅ check existing user
+    const existingUser = await User.findOne({
+      email: normalizedEmail,
+    });
+
+    if (existingUser) {
       return res.status(400).json({
-        message: "User already exist with this email.",
+        message: "User already exists with this email.",
         success: false,
       });
     }
+
+    // ✅ upload profile photo (optional)
+    let profilePhoto = "";
+
+    if (req.file) {
+      const fileUri = getDataUri(req.file);
+      const uploadedFile =
+        await cloudinary.uploader.upload(fileUri.content);
+
+      profilePhoto = uploadedFile.secure_url;
+    }
+
+    // ✅ hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ✅ create user
     await User.create({
       fullname,
-      email,
+      email: normalizedEmail,
       phoneNumber,
       password: hashedPassword,
       role,
       profile: {
-        profilePhoto:cloudResponse.secure_url,
-        
+        profilePhoto,
       },
     });
 
@@ -44,8 +60,13 @@ export const register = async (req, res) => {
       message: "Account created successfully.",
       success: true,
     });
+
   } catch (error) {
     console.log(error);
+    return res.status(500).json({
+      message: "Server error",
+      success: false,
+    });
   }
 };
 export const login = async (req, res) => {

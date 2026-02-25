@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+
 import {
   Table,
   TableBody,
@@ -8,35 +8,57 @@ import {
   TableRow,
 } from "../ui/table";
 
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Edit2, Eye, MoreHorizontal, Building2 } from "lucide-react";
+import { Building2, Trash2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { JOB_API_END_POINT } from "../utils/constant";
+import { setAllAdminJobs } from "../../redux/jobSlice";
+import { toast } from "sonner";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 
 const AdminJobsTable = () => {
-  const { allAdminJobs, searchJobByText } = useSelector(
+  const { allAdminJobs} = useSelector(
     (store) => store.job
   );
 
-  const [filterJobs, setFilterJobs] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const filteredJobs = allAdminJobs.filter((job) => {
-      if (!searchJobByText) return true;
+ 
 
-      return (
-        job?.title
-          ?.toLowerCase()
-          .includes(searchJobByText.toLowerCase()) ||
-        job?.company?.name
-          ?.toLowerCase()
-          .includes(searchJobByText.toLowerCase())
+   /* ================= DELETE Job ================= */
+  const deleteJobHandler = async (jobId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this Job?"
+    );
+
+    if (!confirmDelete) return;
+    console.log(`${JOB_API_END_POINT}/delete/${jobId}`);
+
+    try {
+      await axios.delete(
+        `${JOB_API_END_POINT}/delete/${jobId}`,
+        { withCredentials: true }
       );
-    });
+      
 
-    setFilterJobs(filteredJobs);
-  }, [allAdminJobs, searchJobByText]);
+      toast.success("Job deleted successfully");
+
+      //👉 ideally refetch companies here
+       // ✅ remove locally
+    const updatedJobs = allAdminJobs.filter(
+      (job) => job._id !== jobId
+    );
+
+    dispatch(setAllAdminJobs(updatedJobs));
+
+    } catch (error) {
+      toast.error(
+        error.message || "Delete failed"
+      );
+    }
+  };
 
   return (
     <div className="bg-white shadow-lg rounded-2xl p-6">
@@ -59,10 +81,11 @@ const AdminJobsTable = () => {
         </TableHeader>
 
         <TableBody>
-          {filterJobs?.map((job) => (
+          {allAdminJobs?.map((job) => (
             <TableRow
               key={job._id}
               className="hover:bg-gray-50 transition duration-200"
+                onClick={() => navigate(`/admin/jobs/${job._id}`)}
             >
               {/* Company */}
               <TableCell>
@@ -83,7 +106,7 @@ const AdminJobsTable = () => {
 
               {/* Date */}
               <TableCell>
-                {job?.createdAt.split("T")[0]}
+                {new Date(job.createdAt).toLocaleDateString()}
               </TableCell>
 
               {/* Status */}
@@ -95,32 +118,21 @@ const AdminJobsTable = () => {
 
               {/* Actions */}
               <TableCell className="text-right">
-                <Popover>
-                  <PopoverTrigger>
-                    <MoreHorizontal className="cursor-pointer" />
-                  </PopoverTrigger>
-
-                  <PopoverContent className="w-36">
-                    <div
-                      onClick={() =>
-                        navigate(
-                          `/admin/jobs/${job._id}/applicants`
-                        )
-                      }
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-md"
-                    >
-                      <Eye size={16} />
-                      Applicants
-                    </div>
-
-                    <div
-                      className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-2 rounded-md"
-                    >
-                      <Edit2 size={16} />
-                      Edit
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteJobHandler(job._id);
+              }}
+              className="
+                p-2 rounded-lg
+                hover:bg-red-50
+                text-gray-500
+                hover:text-red-600
+                transition
+              "
+            >
+              <Trash2 size={18} />
+            </button>
               </TableCell>
             </TableRow>
           ))}

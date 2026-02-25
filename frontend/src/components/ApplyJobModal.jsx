@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { APPLICATION_API_END_POINT } from "../components/utils/constant";
+import { APPLICATION_API_END_POINT, JOB_API_END_POINT } from "../components/utils/constant";
 import { toast } from "sonner";
 import { setSingleJob } from "@/redux/jobSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,49 +21,48 @@ const ApplyJobModal = ({ job, close, setIsApplied }) => {
     setAnswers(updated);
   };
 
-  const submitApplication = async () => {
-    // ✅ VALIDATION
-    for (let i = 0; i < job.screeningQuestions.length; i++) {
-      const question = job.screeningQuestions[i];
+ const submitApplication = async () => {
+  // ✅ VALIDATION
+  for (let i = 0; i < job.screeningQuestions.length; i++) {
+    const question = job.screeningQuestions[i];
 
-      if (question.required) {
-        const answer = answers[i]?.answer;
+    if (question.required) {
+      const answer = answers[i]?.answer;
 
-        if (!answer || answer.trim() === "") {
-          toast.error(`Please answer required question ${i + 1}`);
-          return; // 🚨 STOP SUBMIT
-        }
+      if (!answer || answer.trim() === "") {
+        toast.error(`Please answer required question ${i + 1}`);
+        return;
       }
     }
+  }
 
-    // ✅ API CALL ONLY AFTER VALIDATION
-    try {
-      const res = await axios.post(
-        `${APPLICATION_API_END_POINT}/apply/${job._id}`,
-        { answers },
-        { withCredentials: true },
+  try {
+    const res = await axios.post(
+      `${APPLICATION_API_END_POINT}/apply/${job._id}`,
+      { answers },
+      { withCredentials: true }
+    );
+
+    if (res.data.success) {
+      toast.success(res.data.message);
+
+      // ✅ fetch latest job data
+      const updatedJob = await axios.get(
+        `${JOB_API_END_POINT}/get/${job._id}`,
+        { withCredentials: true }
       );
 
-      if (res.data.success) {
-        toast.success(res.data.message);
+      dispatch(setSingleJob(updatedJob.data.job));
 
-        // ✅ update button instantly
-        setIsApplied(true);
-
-        // ✅ realtime redux update
-        dispatch(
-          setSingleJob({
-            ...job,
-            applications: [...job.applications, { applicant: user._id }],
-          }),
-        );
-
-        close();
-      }
-    } catch (err) {
-      toast.error(err.message);
+      close();
     }
-  };
+
+  } catch (err) {
+    toast.error(
+      err?.response?.data?.message || "Application failed"
+    );
+  }
+};
 
   return (
     <div

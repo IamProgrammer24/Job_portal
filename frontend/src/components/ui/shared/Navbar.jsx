@@ -38,10 +38,13 @@ const Navbar = () => {
   return (
     <div className="bg-white">
       <div className="flex items-center justify-between mx-auto max-w-7xl h-16 ">
-        <div><Link to="/"> <h1 className="text-2xl font-bold">
-            Job<span className="text-[#F83002]">Portal</span>
-          </h1></Link>
-         
+        <div>
+          <Link to="/">
+            {" "}
+            <h1 className="text-2xl font-bold">
+              Job<span className="text-[#F83002]">Portal</span>
+            </h1>
+          </Link>
         </div>
         <div className="flex items-center gap-12">
           <ul className="flex font-medium items-center gap-5">
@@ -82,11 +85,13 @@ const Navbar = () => {
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Avatar className="cursor-pointer">
+                <Avatar>
                   <AvatarImage
-                    // src={user?.profile?.profilePhoto}
-                    src={user?.profile?.profilePhoto}
-                    alt="@shadcn"
+                    src={
+                      user?.profile?.profilePhoto ||
+                      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/271deea8-e28c-41a3-aaf5-2913f5f48be6/de7834s-6515bd40-8b2c-4dc6-a843-5ac1a95a8b55.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi8yNzFkZWVhOC1lMjhjLTQxYTMtYWFmNS0yOTEzZjVmNDhiZTYvZGU3ODM0cy02NTE1YmQ0MC04YjJjLTRkYzYtYTg0My01YWMxYTk1YThiNTUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.3F2v1c-MwRpNAtP1HUXCLcEy7Yao-9oLrNyO-bU1X7w"
+                    }
+                    alt="profile"
                   />
                 </Avatar>
               </PopoverTrigger>
@@ -95,10 +100,12 @@ const Navbar = () => {
                   <div className="flex gap-2 space-y-2">
                     <Avatar className="cursor-pointer">
                       <AvatarImage
-                        // src={user?.profile?.profilePhoto}
-                        src={user?.profile?.profilePhoto}
-                        alt="@shadcn"
-                      />
+                    src={
+                      user?.profile?.profilePhoto ||
+                      "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/271deea8-e28c-41a3-aaf5-2913f5f48be6/de7834s-6515bd40-8b2c-4dc6-a843-5ac1a95a8b55.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi8yNzFkZWVhOC1lMjhjLTQxYTMtYWFmNS0yOTEzZjVmNDhiZTYvZGU3ODM0cy02NTE1YmQ0MC04YjJjLTRkYzYtYTg0My01YWMxYTk1YThiNTUuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.3F2v1c-MwRpNAtP1HUXCLcEy7Yao-9oLrNyO-bU1X7w"
+                    }
+                    alt="profile"
+                  />
                     </Avatar>
                     <div>
                       <h4 className="font-medium">{user?.fullname}</h4>
